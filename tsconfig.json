@@ -15,12 +15,17 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "types": ["jest", "node"],
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "types": [
+      "jest",
+      "node"
+    ],
     "paths": {
       "@app/common": [
         "libs/common/src"

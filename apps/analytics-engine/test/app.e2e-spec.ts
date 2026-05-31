@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AnalyticsEngineModule } from './../src/analytics-engine.module';
+import { App } from 'supertest/types';
 
 describe('AnalyticsEngineController (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<App>;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { CollectorServiceModule } from './../src/collector-service.module';
+import { App } from 'supertest/types';
 
 describe('CollectorServiceController (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<App>;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
