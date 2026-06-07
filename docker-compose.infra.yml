@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: market-pulse-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    ports:
+      - ${POSTGRES_LOCAL_PORT:-5432}:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:7
+    container_name: market-pulse-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:?set MONGO_USER in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?set MONGO_PASSWORD in .env}
+    ports:
+      - ${MONGO_LOCAL_PORT:-27017}:27017
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: market-pulse-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env} --appendonly yes
+    ports:
+      - ${REDIS_LOCAL_PORT:-6379}:6379
+    volumes:
+      - redis_data:/data
+
+  pgAdmin:
+    image: dpage/pgadmin4:latest
+    container_name: market-pulse-pgAdmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER:?set PGADMIN_USER in .env}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:?set PGADMIN_PASSWORD in .env}
+    ports:
+      - ${PGADMIN_LOCAL_PORT:-8090}:80
+    depends_on:
+      - postgres
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: market-pulse-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER:?set MONGO_USER in .env}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD:?set MONGO_PASSWORD in .env}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER:?set MONGO_EXPRESS_USER in .env}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:?set MONGO_EXPRESS_PASSWORD in .env}
+    ports:
+      - ${MONGO_EXPRESS_LOCAL_PORT:-8091}:8081
+    depends_on:
+      - mongo
+
+
+volumes:
+  pg_data:
+  mongo_data:
+  redis_data:
